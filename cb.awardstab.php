@@ -25,29 +25,18 @@ class getAwardsTab extends cbTabHandler {
 		require_once($mosConfig_absolute_path."/administrator/components/com_jawards/config.jawards.php");
 	else return "Error: jAwards Config file could not be read. Is the appropriate version of the jAwards-component installed?";
 	
-	// get ItemID from DB:
-	$database->setQuery("select id from #__menu where link like '%com_jawards%'");
-	$Itemid=$database->loadResult();
-	if ($Itemid == '' || $Itemid == NULL)
-		$Itemid = "";
-	else
-		$Itemid = "&amp;Itemid=$Itemid";
-
+	if (file_exists($mosConfig_absolute_path."/components/com_jawards/jawards.interface.php"))
+		require_once($mosConfig_absolute_path."/components/com_jawards/jawards.interface.php");
+	else return "Error: jAwards Interface could not be found. This plugin requires jAwards 1.0 or later!";
+	
+	$interface = new jAwardsInterface();
+	
 	$params = $this->params;
-	$return="";
-	$query = "SELECT *";
-	if ($ja_config['groupawards'])
-		$query .=", COUNT(a.id) AS count";
-	$query .= "\n FROM #__jawards_awards AS a"
-	. "\n LEFT JOIN #__jawards_medals AS b ON b.id = a.award"
-	. "\n WHERE a.userid=". $user->id;
-	if ($ja_config['groupawards'])
-		$query .= "\n GROUP BY award";
-	$query .= "\n ORDER BY a.date desc";
-
-	$database->setQuery( $query );
-
-	$items = $database->loadObjectList();
+	$Itemid = $interface->getItemId();
+	
+	$total=$interface->getNumAwardsUser($user->id);	
+	$items = $interface->getAwardsUser($user->id);
+	
 	if(!count($items)>0) {
 		//debugging:
 		// return $database->stderr();
@@ -57,6 +46,9 @@ class getAwardsTab extends cbTabHandler {
 	// Link for individual awards to medal:
 	$medalLink='index.php?option=com_jawards&task=listusers&award=';
 
+	$return="";
+	$return .= "<p>"._AWARDS_TOTAL_NUMBER_AWARDS.": $total</p>";
+	
 	$return .= "<table cellpadding=\"5\" cellspacing=\"0\" border=\"0\" width=\"95%\">";
 	$return .= "<tr class=\"sectiontableheader\">";
 	$return .= "<td colspan=\"2\">"._AWARDS_AWARD."</td><td>"._AWARDS_DATE."</td>";
