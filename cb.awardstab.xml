@@ -2,31 +2,31 @@
 <cbinstall version="4.5.3" type="plugin" group="user">
 	<name>jAwards-Tab</name>
 	<author>Armin Hornung</author>
-	<creationDate>January 2008</creationDate>
-	<copyright>(C) 2008 Armin Hornung</copyright>
+	<creationDate>March 2009</creationDate>
+	<copyright>(C) 2009 Armin Hornung</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>mail[at]arminhornung[dot]de</authorEmail>
-        <authorUrl>http://www.arminhornung.de/index.php?section=Joomla&amp;file=jAwards&amp;l=en</authorUrl>
+        <authorUrl>http://www.arminhornung.de/Joomla/jAwards_en.html</authorUrl>
 	<version>1.0 RC 2</version>
 	<description>Provides a User Tab that shows awards or medals handed out to the user by the component jAwards. <br />
-            Tab Version 0.4 for jAwards 0.8 or later.</description>
+            Tab Version 0.5 for jAwards 1.0 or later.</description>
 	<files>
 		<filename plugin="cb.awardstab">cb.awardstab.php</filename>
 		<filename>index.html</filename>
 	</files>
-	<params>
-		<param name="showAwardsDesc" type="radio" default="1" label="Show link to Awards description" description="If checked, a link to the description page of the awards will be shown.">
+    <tabs>
+		<tab name="Awards" description="" class="getAwardsTab" fields="0" position="cb_tabmain" displaytype="tab">
+		<params>
+		  <param name="showAwardsDesc" type="radio" default="1" label="Show link to Awards description" description="If checked, a link to the description page of the awards will be shown.">
 			<option value="0">Hide</option>
 			<option value="1">Show</option>
-	    </param>
-		<param name="awardsDesc" type="text" size="40" default="" label="Awards description URL" description="Leave empty to link to the default overview page of the jAwards-component, or enter any URL you want to link to (e.g. a static page with custom description)" />
-		<param name="maxGrouping" type="text" size="3" default="1" label="Maximum number of medal images to group" description="When grouping is enabled in the general jAwards configuration, the tab can display this number of stacked medal images at most. The complete number is written next to the medal images, regardless of the setting here.." />
-		</params>
-        <tabs>
-		<tab name="Awards" description="" class="getAwardsTab" fields="0" position="cb_tabmain" displaytype="tab">
-			
-			<fields>
-			</fields>
+	      </param>
+		  <param name="awardsDesc" type="text" size="40" default="" label="Awards description URL" description="Leave empty to link to the default overview page of the jAwards-component, or enter any URL you want to link to (e.g. a static page with custom description)" />
+		  <param name="maxGrouping" type="text" size="3" default="1" label="Maximum number of medal images to group" description="When grouping is enabled in the general jAwards configuration, the tab can display this number of stacked medal images at most. The complete number is written next to the medal images, regardless of the setting here.." />
+		  <param name="numAwards" type="text" size="5" default="10" label="Number of awards per page" description="How many awards should be displayed per page?" />
+		</params>	
+		<fields>
+		</fields>
 		</tab>
 	</tabs>
 </cbinstall>

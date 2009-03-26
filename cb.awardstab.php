@@ -35,14 +35,25 @@ class getAwardsTab extends cbTabHandler {
 	$Itemid = $interface->getItemId();
 	
 	$total=$interface->getNumAwardsUser($user->id);	
-	$items = $interface->getAwardsUser($user->id);
 	
-	if(!count($items)>0) {
-		//debugging:
-		// return $database->stderr();
+	// display no tab when there are no awards:
+	if($total < 1) {
 		return null;
 	}
+	
+	// Pagination:
+    $startpage=1;
+    $perpage = $params->get('numAwards','10');
+    	
+    $pagingParams = $this->_getPaging(array(),array("awardstab_"));
+    if ($pagingParams["awardstab_limitstart"] === null)
+    	$pagingParams["awardstab_limitstart"] = "0";
+    if ($perpage > $total) 
+    	$pagingParams["awardstab_limitstart"] = "0";
 
+    $limitstart = $pagingParams["awardstab_limitstart"]?$pagingParams["awardstab_limitstart"]:"0";
+	$items = $interface->getAwardsUser($user->id, "a.date DESC", $perpage,$limitstart);
+	
 	// Link for individual awards to medal:
 	$medalLink='index.php?option=com_jawards&task=listusers&award=';
 
@@ -73,7 +84,7 @@ class getAwardsTab extends cbTabHandler {
 			$return .= "<span style=\"display:inline-block; vertical-align:middle\">".$item->count."x</span>";
 
 		$return .= "</td><td><a href=\"". sefRelToAbs($medalLink.$item->award.$Itemid) . "\">$item->name</a> </td>";
-		$return .= "<td> ".date("d. m. Y",strtotime($item->date)) . "</td>";
+		$return .= "<td> ".strftime($ja_config['dateformat'],strtotime($item->date)) . "</td>";
 		if ($ja_config['showawardreason'])
 			$return .="<td>$item->reason</td>";
 			
@@ -81,6 +92,13 @@ class getAwardsTab extends cbTabHandler {
 
 	}
 	$return .= "</table>";
+	
+	// pagination:
+  	if ($perpage < $total) {
+		$return .= "<div style='width:95%;text-align:center;'>"
+		.$this->_writePaging($pagingParams,"awardstab_",$perpage,$total)
+		."</div>";
+	}
 	$descUrl = $params->get('awardsDesc','');
 	$showDesc = $params->get('showAwardsDesc','1');
 	
