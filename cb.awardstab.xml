@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cbinstall version="4.5.3" type="plugin" group="user">
+<cbinstall version="1.0" type="plugin" group="user">
 	<name>jAwards-Tab</name>
 	<author>Armin Hornung</author>
 	<creationDate>March 2009</creationDate>
@@ -7,7 +7,7 @@
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>mail[at]arminhornung[dot]de</authorEmail>
         <authorUrl>http://www.arminhornung.de/Joomla/jAwards_en.html</authorUrl>
-	<version>1.0 RC 2</version>
+	<version>1.0.2</version>
 	<description>Provides a User Tab that shows awards or medals handed out to the user by the component jAwards. <br />
             Tab Version 0.5 for jAwards 1.0 or later.</description>
 	<files>
