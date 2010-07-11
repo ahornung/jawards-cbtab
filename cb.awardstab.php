@@ -1,8 +1,9 @@
 <?php
 /*************************************************************
  * Tab to display medals of the jAwards Component in a CB-Profile
- * Version: 0.4, needs jAwards > 0.8 
+ * Version: 0.6, needs jAwards > 1.1 
  * Author: Armin Hornung @  www.arminhornung.de
+ * Ported to Joomla 1.5 native with help of Chris Lehr
  * Released under GNU/GPL License : 
  * http://www.gnu.org/copyleft/gpl.html
  *************************************************************/
@@ -12,22 +13,27 @@ class getAwardsTab extends cbTabHandler {
 	}
 	
   function getDisplayTab($tab,$user,$ui) {
-	global $database,$mosConfig_live_site, $mosConfig_absolute_path, $mosConfig_lang;
-	// Language:
-	if (file_exists($mosConfig_absolute_path."/administrator/components/com_jawards/language/".$mosConfig_lang.".php"))
-	    include_once($mosConfig_absolute_path."/administrator/components/com_jawards/language/".$mosConfig_lang.".php");
-	else if(file_exists($mosConfig_absolute_path."/administrator/components/com_jawards/language/english.php"))
-		include_once($mosConfig_absolute_path."/administrator/components/com_jawards/language/english.php");
-	else return "Error: No language file could be loaded. Is the jAwards component properly installed?";
+	$database = &JFactory::getDbo();
 	
+	// backwards-compatible language name:
+	$lg = &JFactory::getLanguage();
+	$lang = $lg->getBackwardLang();
+	
+	// fallback to english when language not available.
+	if (!file_exists(JPATH_COMPONENT.DS.'plugin/user/plug_jawards-tab/language'.DS.$lang.".php"))
+		$lang = "english";
+
+	// include language:
+	include_once(JPATH_COMPONENT.DS.'plugin/user/plug_jawards-tab/language'.DS.$lang.".php");
+		
 	// Config & jAwards-component-check:
-	if (file_exists($mosConfig_absolute_path."/administrator/components/com_jawards/config.jawards.php"))
-		require_once($mosConfig_absolute_path."/administrator/components/com_jawards/config.jawards.php");
+	if (file_exists(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jawards'.DS."config.jawards.php"))
+		require_once(JPATH_ADMINISTRATOR.DS.'components'.DS.'com_jawards'.DS."config.jawards.php");
 	else return "Error: jAwards Config file could not be read. Is the appropriate version of the jAwards-component installed?";
 	
-	if (file_exists($mosConfig_absolute_path."/components/com_jawards/jawards.interface.php"))
-		require_once($mosConfig_absolute_path."/components/com_jawards/jawards.interface.php");
-	else return "Error: jAwards Interface could not be found. This plugin requires jAwards 1.0 or later!";
+	if (file_exists(JPATH_BASE.DS.'components'.DS.'com_jawards'.DS."jawards.interface.php"))
+		require_once(JPATH_BASE.DS.'components'.DS.'com_jawards'.DS."jawards.interface.php");
+	else return "Error: jAwards Interface could not be found. This plugin requires jAwards 1.1 or later!";
 	
 	$interface = new jAwardsInterface();
 	
@@ -58,34 +64,34 @@ class getAwardsTab extends cbTabHandler {
 	$medalLink='index.php?option=com_jawards&task=listusers&award=';
 
 	$return="";
-	$return .= "<p>"._AWARDS_TOTAL_NUMBER_AWARDS.": $total</p>";
+	$return .= "<p>".AWARDS_TOTAL_NUMBER_AWARDS.": $total</p>";
 	
 	$return .= "<table cellpadding=\"5\" cellspacing=\"0\" border=\"0\" width=\"95%\">";
 	$return .= "<tr class=\"sectiontableheader\">";
-	$return .= "<td colspan=\"2\">"._AWARDS_AWARD."</td><td>"._AWARDS_DATE."</td>";
-	if ($ja_config['showawardreason'])
-		$return .="<td>"._AWARDS_REASON."</td>";
+	$return .= "<td colspan=\"2\">".AWARDS_AWARD."</td><td>".AWARDS_DATE."</td>";
+	if ($jAwards_Config['showawardreason'])
+		$return .="<td>".AWARDS_REASON."</td>";
 	$return .= "</tr>";
 	$i=1;
 	foreach($items AS $item) {
 		$i= ($i==1) ? 2 : 1;
 		$displayImages = 1;
 		$maxGrouping = max(1,intval($params->get('maxGrouping')));
-		if ($ja_config['groupawards'])
+		if ($jAwards_Config['groupawards'])
 			$displayImages = min($item->count, $maxGrouping);
 		$return .= "<tr class=\"sectiontableentry$i\">"
 		."<td>";
 		
 		for ($j=0;$j<$displayImages; $j++){
-			$return .="<img src=\"".$mosConfig_live_site."/images/medals/".$item->image."\" alt=\"".$item->image."\" style=\"vertical-align:middle;\"/>";
+			$return .="<img src=\"".JUri::base(true)."/images/medals/".$item->image."\" alt=\"".$item->image."\" style=\"vertical-align:middle;\"/>";
 		}
 
-		if ($ja_config['groupawards'] && $item->count > 1)
+		if ($jAwards_Config['groupawards'] && $item->count > 1)
 			$return .= "<span style=\"display:inline-block; vertical-align:middle\">".$item->count."x</span>";
 
-		$return .= "</td><td><a href=\"". sefRelToAbs($medalLink.$item->award.$Itemid) . "\">$item->name</a> </td>";
-		$return .= "<td> ".strftime($ja_config['dateformat'],strtotime($item->date)) . "</td>";
-		if ($ja_config['showawardreason'])
+		$return .= "</td><td><a href=\"".  JRoute::_($medalLink.$item->award.$Itemid) . "\">$item->name</a> </td>";
+		$return .= "<td> ".strftime($jAwards_Config['dateformat'],strtotime($item->date)) . "</td>";
+		if ($jAwards_Config['showawardreason'])
 			$return .="<td>$item->reason</td>";
 			
 		$return.= "</tr>\n";
@@ -106,7 +112,7 @@ class getAwardsTab extends cbTabHandler {
 		$descUrl='index.php?option=com_jawards'.$Itemid;
 	
 	if ($showDesc)
-      		$return.="<br /><a href=\"$descUrl\">"._AWARDS_INFORMATION."</a>";
+      		$return.="<br /><a href=\"$descUrl\">".AWARDS_INFORMATION."</a>";
 	      
 	return $return;
 	}
