@@ -9,7 +9,7 @@
         <authorUrl>http://www.arminhornung.de/Joomla/jAwards_en.html</authorUrl>
 	<version>1.2</version>
 	<description>Provides a User Tab that shows awards or medals handed out to the user by the component jAwards. <br />
-            Tab Version 0.6 for jAwards 1.1 or later and Joomla 1.6/1.7.</description>
+            Tab Version 0.7 for jAwards 1.1 or later and Joomla 1.6/1.7.</description>
 	<files>
 		<filename plugin="cb.awardstab">cb.awardstab.php</filename>
 		<filename>index.html</filename>

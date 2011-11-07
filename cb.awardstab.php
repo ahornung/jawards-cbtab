@@ -1,7 +1,7 @@
 <?php
 /*************************************************************
  * Tab to display medals of the jAwards Component in a CB-Profile
- * Version: 0.6, needs jAwards > 1.1 and Joomla 1.6/1.7
+ * Version: 0.7, needs jAwards > 1.1 and Joomla 1.6/1.7
  * Author: Armin Hornung @  www.arminhornung.de
  * Ported to Joomla 1.5 native with help of Chris Lehr
  * Released under GNU/GPL License : 
