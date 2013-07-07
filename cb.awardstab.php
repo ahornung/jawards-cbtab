@@ -1,9 +1,8 @@
 <?php
 /*************************************************************
  * Tab to display medals of the jAwards Component in a CB-Profile
- * Version: 0.7, needs jAwards > 1.1 and Joomla 1.6/1.7
+ * Version: 0.8, needs jAwards > 1.1 and Joomla 1.6/1.7/2.5
  * Author: Armin Hornung @  www.arminhornung.de
- * Ported to Joomla 1.5 native with help of Chris Lehr
  * Released under GNU/GPL License : 
  * http://www.gnu.org/copyleft/gpl.html
  *************************************************************/
@@ -52,6 +51,7 @@ class getAwardsTab extends cbTabHandler {
     // Pagination:
     $startpage=1;
     $perpage = $params->get('numAwards','10');
+    $imagesonly = $params->get('imagesOnly', 0);
         
     $pagingParams = $this->_getPaging(array(),array("awardstab_"));
     if ($pagingParams["awardstab_limitstart"] === null)
@@ -68,38 +68,49 @@ class getAwardsTab extends cbTabHandler {
     $return="";
     $return .= "<p>".AWARDS_TOTAL_NUMBER_AWARDS.": $total</p>";
     
-    $return .= "<table cellpadding=\"5\" cellspacing=\"0\" border=\"0\" width=\"95%\">";
-    $return .= "<tr class=\"sectiontableheader\">";
-    $return .= "<td colspan=\"2\">".AWARDS_AWARD."</td><td>".AWARDS_DATE."</td>";
-    if ($jAwards_Config['showawardreason'])
-        $return .="<td>".AWARDS_REASON."</td>";
-    $return .= "</tr>";
+    if (!$imagesonly){
+        $return .= "<table cellpadding=\"5\" cellspacing=\"0\" border=\"0\" width=\"95%\">";
+        $return .= "<tr class=\"sectiontableheader\">";
+        $return .= "<td colspan=\"2\">".AWARDS_AWARD."</td><td>".AWARDS_DATE."</td>";
+        if ($jAwards_Config['showawardreason'])
+            $return .="<td>".AWARDS_REASON."</td>";
+        $return .= "</tr>";
+    }
     $i=1;
     foreach($items AS $item) {
-        $i= ($i==1) ? 2 : 1;
-        $displayImages = 1;
-        $maxGrouping = max(1,intval($params->get('maxGrouping')));
-        if ($jAwards_Config['groupawards'])
-            $displayImages = min($item->count, $maxGrouping);
-        $return .= "<tr class=\"sectiontableentry$i\">"
-        ."<td>";
+        $img = "<img src=\"".JUri::base(true)."/images/medals/".$item->image."\" title=\"".$item->name."\" alt=\"".$item->image."\" style=\"vertical-align:middle;\"/>";
+        $link = "<a href=\"".  JRoute::_($medalLink.$item->award.$Itemid) . "\">";
         
-        for ($j=0;$j<$displayImages; $j++){
-            $return .="<img src=\"".JUri::base(true)."/images/medals/".$item->image."\" alt=\"".$item->image."\" style=\"vertical-align:middle;\"/>";
+        if ($imagesonly){
+            $return .= $link.$img."</a>";    
+        } else{
+            $i= ($i==1) ? 2 : 1;
+            $displayImages = 1;
+            $maxGrouping = max(1,intval($params->get('maxGrouping')));
+            if ($jAwards_Config['groupawards'])
+                $displayImages = min($item->count, $maxGrouping);
+            $return .= "<tr class=\"sectiontableentry$i\">"
+            ."<td>";
+            
+            for ($j=0;$j<$displayImages; $j++){
+                $return .=$img;
+            }
+
+            if ($jAwards_Config['groupawards'] && $item->count > 1)
+                $return .= "<span style=\"display:inline-block; vertical-align:middle\">".$item->count."x</span>";
+
+            $return .= "</td><td>".$link.$item->name."</a> </td>";
+            $return .= "<td> ".strftime($jAwards_Config['dateformat'],strtotime($item->date)) . "</td>";
+            if ($jAwards_Config['showawardreason'])
+                $return .="<td>$item->reason</td>";
+                
+            $return.= "</tr>\n";
         }
 
-        if ($jAwards_Config['groupawards'] && $item->count > 1)
-            $return .= "<span style=\"display:inline-block; vertical-align:middle\">".$item->count."x</span>";
-
-        $return .= "</td><td><a href=\"".  JRoute::_($medalLink.$item->award.$Itemid) . "\">$item->name</a> </td>";
-        $return .= "<td> ".strftime($jAwards_Config['dateformat'],strtotime($item->date)) . "</td>";
-        if ($jAwards_Config['showawardreason'])
-            $return .="<td>$item->reason</td>";
-            
-        $return.= "</tr>\n";
-
     }
-    $return .= "</table>";
+    if (!$imagesonly){
+      $return .= "</table>";
+    }
     
     // pagination:
     if ($perpage < $total) {

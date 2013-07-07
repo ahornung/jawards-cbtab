@@ -2,14 +2,14 @@
 <cbinstall version="1.0" type="plugin" group="user">
 	<name>jAwards-Tab</name>
 	<author>Armin Hornung</author>
-	<creationDate>Nov 2011</creationDate>
+	<creationDate>July 2013</creationDate>
 	<copyright>(C) 2009-2011 Armin Hornung</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>mail[at]arminhornung[dot]de</authorEmail>
         <authorUrl>http://www.arminhornung.de/Joomla/jAwards_en.html</authorUrl>
 	<version>1.2</version>
 	<description>Provides a User Tab that shows awards or medals handed out to the user by the component jAwards. <br />
-            Tab Version 0.7 for jAwards 1.1 or later and Joomla 1.6/1.7.</description>
+            Tab Version 0.8 for jAwards 1.1 or later and Joomla 1.6/1.7/2.5.</description>
 	<files>
 		<filename plugin="cb.awardstab">cb.awardstab.php</filename>
 		<filename>index.html</filename>
@@ -29,6 +29,11 @@
 		  <param name="awardsDesc" type="text" size="40" default="" label="Awards description URL" description="Leave empty to link to the default overview page of the jAwards-component, or enter any URL you want to link to (e.g. a static page with custom description)" />
 		  <param name="maxGrouping" type="text" size="3" default="1" label="Maximum number of medal images to group" description="When grouping is enabled in the general jAwards configuration, the tab can display this number of stacked medal images at most. The complete number is written next to the medal images, regardless of the setting here.." />
 		  <param name="numAwards" type="text" size="5" default="10" label="Number of awards per page" description="How many awards should be displayed per page?" />
+          <param name="imagesOnly" type="radio" default="0" label="Show only images instead of awards list" description="If enabled, shows only a list of medal
+          images instead of a table of awards">
+             <option value="0">Disabled</option>
+             <option value="1">Enabled</option>
+         </param>
 		</params>	
 		<fields>
 		</fields>
